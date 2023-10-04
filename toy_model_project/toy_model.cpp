@@ -35,6 +35,12 @@ int main() {
     // Create a toy input tensor of size [10, 5] and move it to GPU
     torch::Tensor input = torch::randn({10, 5}).to(device);
 
+    // Warm-up: Run inference multiple times
+    const int warmup_runs = 10;  // you can adjust this number as needed
+    for (int i = 0; i < warmup_runs; ++i) {
+        torch::Tensor dummy_output = net.forward(input);
+    }
+
     // Measure time for inference
     auto start_inference = std::chrono::high_resolution_clock::now();
     torch::Tensor output = net.forward(input);

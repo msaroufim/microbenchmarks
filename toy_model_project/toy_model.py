@@ -27,9 +27,17 @@ if __name__ == '__main__':
 
     # Move the model to GPU
     net.to(device)
+   
+
+
 
     # Create a toy input tensor of size [10, 5] and move it to GPU
     input_tensor = torch.randn(10, 5).to(device)
+
+    # Warm-up: Run inference multiple times
+    warmup_runs = 10
+    for _ in range(warmup_runs):
+        dummy_output = net(input_tensor)
 
     # Measure time for inference
     start_inference = time.time()
