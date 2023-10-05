@@ -22,6 +22,7 @@ int main() {
     // Measure time to initialize CUDA context
     auto start_cuda = std::chrono::high_resolution_clock::now();
     torch::Device device(torch::kCUDA);
+    torch::cuda::synchronize();  // Add synchronization after CUDA context initialization
     auto end_cuda = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff_cuda = end_cuda - start_cuda;
     std::cout << "Time to initialize CUDA context: " << diff_cuda.count() << " s" << std::endl;
@@ -41,9 +42,12 @@ int main() {
         torch::Tensor dummy_output = net.forward(input);
     }
 
+    torch::cuda::synchronize();  // Synchronize before starting the timer for inference
+
     // Measure time for inference
     auto start_inference = std::chrono::high_resolution_clock::now();
     torch::Tensor output = net.forward(input);
+    torch::cuda::synchronize();  // Synchronize after inference to get accurate timing
     auto end_inference = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff_inference = end_inference - start_inference;
     std::cout << "Time for inference: " << diff_inference.count() << " s" << std::endl;
